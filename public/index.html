@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat App - Home</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+        nav {
+            background-color: #007bff;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        nav h1 {
+            color: white;
+            margin: 0;
+            padding-left: 20px;
+        }
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            padding-right: 20px;
+        }
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+        .container {
+            margin-top: 50px;
+            padding: 20px;
+        }
+        .container h2 {
+            font-size: 30px;
+            margin-bottom: 20px;
+        }
+        .btn-container {
+            margin-top: 20px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 25px;
+            font-size: 18px;
+            color: white;
+            background-color: #007bff;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 10px;
+            transition: background 0.3s;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        footer {
+            margin-top: 50px;
+            padding: 20px;
+            background-color: #333;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <h1>Chat App</h1>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/signin.html">Sign In</a>
+            <a href="/signup.html">Sign Up</a>
+            <a href="/chatroom.html">Chatroom</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2>Welcome to the Best Chat App!</h2>
+        <p>Connect with friends and chat in real time.</p>
+
+        <div class="btn-container">
+            <a href="/signin.html" class="btn">Sign In</a>
+            <a href="/signup.html" class="btn">Sign Up</a>
+            <a href="/chatroom.html" class="btn">Go to Chatroom</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2025 Chat App. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>

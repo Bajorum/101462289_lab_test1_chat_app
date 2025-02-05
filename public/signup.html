@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#signupButton').click(function (e) {
+                e.preventDefault();
+
+                const username = $('#username').val().trim();
+                const password = $('#password').val().trim();
+
+                // Validate input fields
+                if (!username || !password) {
+                    alert('Both username and password are required!');
+                    return;
+                }
+
+                // Perform the sign-up request
+                $.post('/signup', { username, password })
+                    .done(() => {
+                        alert('Sign-up successful! Redirecting to the chatroom...');
+                        window.location.href = '/chatroom.html'; // Redirect to chatroom
+                    })
+                    .fail((xhr) => {
+                        // Handle errors
+                        if (xhr.status === 409) {
+                            alert('Username already exists. Please choose another one.');
+                        } else {
+                            alert('An error occurred during sign-up. Please try again.');
+                        }
+                    });
+            });
+        });
+    </script>
+</head>
+<body>
+    <h2>Sign Up</h2>
+    <form id="signupForm">
+        <!-- Username Input -->
+        <input type="text" id="username" placeholder="Username" required><br>
+        <!-- Password Input -->
+        <input type="password" id="password" placeholder="Password" required><br>
+        <!-- Sign-Up Button -->
+        <button id="signupButton">Sign Up</button>
+    </form>
+</body>
+</html>

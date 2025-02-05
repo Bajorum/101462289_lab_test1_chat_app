@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatroom</title>
+    <script src="https://cdn.socket.io/4.5.1/socket.io.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .chat-container {
+            width: 80%;
+            max-width: 800px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .room-selection {
+            margin-bottom: 15px;
+        }
+        .messages {
+            height: 300px;
+            overflow-y: auto;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: #f8f8f8;
+        }
+        .message {
+            margin-bottom: 10px;
+            padding: 10px;
+            background: #e2e8f0;
+            border-radius: 5px;
+        }
+        .input-section {
+            display: flex;
+            margin-top: 10px;
+        }
+        .input-section input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #bbb;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        .input-section button {
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .input-section button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            const socket = io();
+            const username = localStorage.getItem('username');
+            let currentRoom = '';
+
+            if (!username) {
+                alert('You must sign in first!');
+                window.location.href = '/signin';
+                return;
+            }
+
+            const predefinedRooms = ['DevOps', 'Cloud Computing', 'COVID-19', 'Sports', 'NodeJS'];
+
+            function updateRoomList() {
+                $('#roomSelect').empty();
+                predefinedRooms.forEach(room => {
+                    $('#roomSelect').append(`<option value="${room}">${room}</option>`);
+                });
+            }
+
+            updateRoomList();
+
+            $('#roomSelect').change(function () {
+                const room = $(this).val();
+                if (room) joinRoom(room);
+            });
+
+            $('#createRoomButton').click(function () {
+                const newRoom = prompt('Enter new room name:');
+                if (newRoom && !predefinedRooms.includes(newRoom)) {
+                    predefinedRooms.push(newRoom);
+                    updateRoomList();
+                    $('#roomSelect').val(newRoom).change();
+                }
+            });
+
+            function joinRoom(room) {
+                if (currentRoom) {
+                    socket.emit('leaveRoom', currentRoom);
+                }
+                currentRoom = room;
+                socket.emit('joinRoom', { username, room });
+            }
+
+            function leaveRoom() {
+                if (currentRoom) {
+                    socket.emit('leaveRoom', currentRoom);
+                    currentRoom = '';
+                    $('.messages').empty();
+                    alert('You have left the room.');
+                }
+            }
+
+            socket.on('messageHistory', (messages) => {
+                $('.messages').empty();
+                messages.forEach(msg => {
+                    $('.messages').append(`<div class="message"><strong>${msg.username}:</strong> ${msg.message}</div>`);
+                });
+                $('.messages').scrollTop($('.messages')[0].scrollHeight);
+            });
+
+            socket.on('message', (data) => {
+                $('.messages').append(`<div class="message"><strong>${data.username}:</strong> ${data.message}</div>`);
+                $('.messages').scrollTop($('.messages')[0].scrollHeight);
+            });
+
+            $('#sendMessage').click(function () {
+                const message = $('#messageInput').val().trim();
+                if (!message) return;
+                socket.emit('chatMessage', { username, room: currentRoom, message });
+                $('#messageInput').val('');
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="chat-container">
+        <h2>Chatroom</h2>
+        <div class="room-selection">
+            <label for="roomSelect">Select a room:</label>
+            <select id="roomSelect"></select>
+            <button id="createRoomButton">+ Create Room</button>
+            <button id="leaveRoomButton" onclick="leaveRoom()">Leave Room</button>
+        </div>
+        <div class="messages"></div>
+        <div class="input-section">
+            <input type="text" id="messageInput" placeholder="Type your message here..." />
+            <button id="sendMessage">Send</button>
+        </div>
+    </div>
+</body>
+</html>
